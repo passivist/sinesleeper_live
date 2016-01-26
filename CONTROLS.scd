@@ -13,7 +13,7 @@
 	text.string = "sends / delay";
 	text.align_(\center);
 
-	win.front;
+	//win.front;
 
 	MIDIdef.cc(\tracks, { |val, cc|
 		val = val / 127;
@@ -98,7 +98,7 @@
 		if(val > 0){
 			{
 				switch(cc,
-					88, { ~sine_presets[\init].value; }
+					88, { ~loadPreset.value("INIT") }
 				)
 			}.defer;
 		}

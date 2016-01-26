@@ -20,7 +20,7 @@ fork{
 
 	//~clock = MIDISyncClock.init;
 	~clock = TempoClock.default;
-	~outBus = [10, 11];
+	~outBus = [0, 1];
 
 	0.5.wait;
 
@@ -36,7 +36,7 @@ fork{
 	loadRelative("LOOPER.scd");
 	loadRelative("GRNLR_SC/GRNLR_GUI.scd");
 	loadRelative("GRNDL/GRNDL.scd");
-	//loadRelative("PRESETS.scd");
+	loadRelative("PRESETS.scd");
 }
 )
 

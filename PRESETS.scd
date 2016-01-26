@@ -1,10 +1,23 @@
+(
 ~savePreset = { |name, dict|
-	var file, valDict;
+	var file, valDict, innerDict;
 
 	file = File.open(("PRESETS/" ++ name.asString ++ ".scd").resolveRelative, "w+");
 	valDict = ();
 
-	dict.keysValuesDo{|key, val| valDict.put(key, val.value)};
+
+	dict.keysValuesDo{ |outKey, outVal|
+		innerDict = ();
+		outVal.keysValuesDo{ |key, val|
+			if(val.isKindOf(EZGui) || val.isKindOf(Button) || val.isKindOf(Slider)){
+				innerDict.put(key, val.value);
+			}{
+				innerDict.put(key, val.cs);
+			}
+		};
+		valDict.put(outKey, innerDict)
+	};
+	valDict.postcs;
 
 	file.write(valDict.cs);
 	file.close;
@@ -14,24 +27,37 @@
 	var dict, buf;
 
 	dict = load(("PRESETS/" ++ name.asString ++ ".scd").resolveRelative);
-	dict.keysValuesDo{|key, val|
-		var obj = ~grnlrPar[key];
-		if(obj.isKindOf(EZNumber) || obj.isKindOf(EZKnob)){
-			[key, val].postln;
-			obj.valueAction_(val);
-		};
+	dict.keysValuesDo{ |outKey, outVal|
+		var subDict = dict[outKey];
+		subDict.keysValuesDo{ |key, val|
+			var obj = ~grVar[outKey][key];
+
+			if(obj.isKindOf(EZGui) || obj.isKindOf(Slider) || obj.isKindOf(Button)){
+				obj.valueAction_(val);
+			};
+			if(obj.isKindOf(Env)){
+				var env = val.compile.value;
+				~grVar[outKey][key] = env;
+				~grVar[outKey][\envView].setEnv(env);
+			}
+		}
 	};
 
-	if(dict[\path].notNil){
-		buf = Buffer.read(s, dict[\path]);
-		~grnlrPar.waveform.load(dict[\path]);
+	if(dict[\grnlr][\path].notNil){
+		buf = Buffer.read(s, dict[\grnlr][\path]);
+		~grnlrPar.waveform.load(dict[\grnlr][\path]);
 		{ 0.1.wait; ~loadSynth.value(buf, ~grnlr_bus) }.fork(AppClock)
 	}
-};
 
+};
+)
+~grVar['seqPos']['env'] = Env([0, 1], 1);
+~grVar['seqPos']['envView'].setEnv(Env([0, 1], 1))
+~grVar['seqPos']['env'].cs
 /*
-~savePreset.value("surge_perc", ~grnlrPar);
-~loadPreset.value("surge_perc");
+~savePreset.value("seqTest", ~grVar);
+~loadPreset.value("seqTest");
+~grVar.postcs;
 */
 
 /*
