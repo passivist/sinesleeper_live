@@ -22,7 +22,7 @@ fork{
 	~clock = TempoClock.default;
 	~outBus = [0, 1];
 
-	0.5.wait;
+	0.3.wait;
 
 	if(~send.isNil){ ~send = Bus.audio(s, 2) };
 	if(~grnlr_bus.isNil){ ~grnlr_bus = Bus.audio(s, 2) };

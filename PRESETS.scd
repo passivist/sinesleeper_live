@@ -1,10 +1,13 @@
 (
+/*
+*	TODO:
+*		add sendMsg to tablet
+*/
 ~savePreset = { |name, dict|
 	var file, valDict, innerDict;
 
 	file = File.open(("PRESETS/" ++ name.asString ++ ".scd").resolveRelative, "w+");
 	valDict = ();
-
 
 	dict.keysValuesDo{ |outKey, outVal|
 		innerDict = ();
@@ -48,25 +51,11 @@
 		~grnlrPar.waveform.load(dict[\grnlr][\path]);
 		{ 0.1.wait; ~loadSynth.value(buf, ~grnlr_bus) }.fork(AppClock)
 	}
-
 };
 )
-~grVar['seqPos']['env'] = Env([0, 1], 1);
-~grVar['seqPos']['envView'].setEnv(Env([0, 1], 1))
-~grVar['seqPos']['env'].cs
+
 /*
-~savePreset.value("seqTest", ~grVar);
-~loadPreset.value("seqTest");
+~savePreset.value("current_piano", ~grVar);
+~loadPreset.value("current_piano");
 ~grVar.postcs;
-*/
-
-/*
-
-buf = Buffer.read(s, path);														// load dragged sample into buffer
-buf.postln;
-
-waveform.load(path);																	// load waveform into SoundFileView
-{ 0.1.wait; ~loadSynth.value(buf, ~grnlr_bus) }.fork(AppClock)			// build synthdef with buffer
-
-
 */
