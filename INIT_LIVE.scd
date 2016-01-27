@@ -13,8 +13,9 @@ s.reboot;
 fork{
 	MIDIClient.init;
 
-	MIDIClient.sources[1].postln;
+	MIDIClient.sources[3].postln;
 	MIDIIn.connect(0, MIDIClient.sources[1]);
+	MIDIIn.connect(0, MIDIClient.sources[3]);
 
 	~tablet = NetAddr.new("192.168.1.6", 5000);
 
