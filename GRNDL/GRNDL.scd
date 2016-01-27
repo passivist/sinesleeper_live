@@ -78,7 +78,7 @@ s.waitForBoot{
 			layout: 'line2'
 	));
 
-	~grndlPar.put(\rate,
+	~grndlPar.put(\trans,
 		EZKnob.new(win,
 			Rect(160, 0, 40, 80),
 			"rate",
@@ -279,7 +279,7 @@ s.waitForBoot{
 			Synth(\grndl, [
 				\buf,		buffer,
 				\pos,		Ndef(\off, { Ndef.ar(\pos) + (~grndlPar.pos.value * rand(~grndlPar.rPos.value)) }),
-				\rate,	~grndlPar.rate.value * (~grndlPar.rRate.value.rand + (1 - (~grndlPar.rRate.value/2))),
+				\rate,	~grndlPar.trans.value.midiratio * (~grndlPar.rRate.value.rand + (1 - (~grndlPar.rRate.value/2))),
 				\fill,	~grndlPar.fill.value * (~grndlPar.rFill.value.rand + (1 - (~grndlPar.rFill.value/2))),
 				\feed,	(~grndlPar.feed.value * (~grndlPar.rFeed.value.rand + (1 - (~grndlPar.rFeed.value/2)))).clip(0, 2),
 				\dur,		localDur,
