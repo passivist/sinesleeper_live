@@ -22,10 +22,10 @@
 				~looperLevels[cc - 41].valueAction_(val)
 			}{
 				if(cc == 47){
-					~grnlrPar.vol.valueAction_(val)
+					~grVar.grnlr.vol.valueAction_(val)
 				};
 				if(cc == 48){
-					~grndlPar.vol.valueAction_(val)
+					~grndlPar.amp.valueAction_(val)
 				}
 			}
 		}.defer
@@ -43,7 +43,7 @@
 
 			}{
 				if(cc == 37){
-					~grnlrPar.send.valueAction_(val)
+					~grVar.grnlr.send.valueAction_(val)
 				};
 				if(cc == 38){
 					~grndlPar.send.valueAction_(val)
@@ -66,7 +66,7 @@
 
 			}{
 				if(cc == 27){
-					~grnlrPar.delay.valueAction_(val)
+					~grVar.grnlr.delay.valueAction_(val)
 				};
 				if(cc == 28){
 					~grndlPar.feed.valueAction_(val.linlin(0, 1, 0, 2))
@@ -106,46 +106,46 @@
 
 	// GRNLR
 	OSCdef(\grnlr_pos, {|msg|
-		{ ~grnlrPar.pos.valueAction_(msg[1]) }.defer;
+		{ ~grVar.grnlr.pos.valueAction_(msg[1]) }.defer;
 	}, '/GRNLR/pos');
 	OSCdef(\grnlr_rPos, {|msg|
-		{ ~grnlrPar.rPos.valueAction_(msg[1].lincurve(0, 1, 0, 1, 3)) }.defer;
+		{ ~grVar.grnlr.rPos.valueAction_(msg[1].lincurve(0, 1, 0, 1, 3)) }.defer;
 	}, '/GRNLR/rPos');
 
 	OSCdef(\grnlr_dur, {|msg|
-		{ ~grnlrPar.dur.valueAction_(msg[1].linexp(0, 1, 0.01, 2)) }.defer;
+		{ ~grVar.grnlr.dur.valueAction_(msg[1].linexp(0, 1, 0.01, 2)) }.defer;
 	}, '/GRNLR/dur');
 	OSCdef(\grnlr_rDur, {|msg|
-		{ ~grnlrPar.rDur.valueAction_(msg[1]) }.defer;
+		{ ~grVar.grnlr.rDur.valueAction_(msg[1]) }.defer;
 	}, '/GRNLR/rDur');
 
 	OSCdef(\grnlr_fill, {|msg|
-		{ ~grnlrPar.fillFactor.valueAction_(msg[1].linexp(0, 1, 0.1, 16)) }.defer;
+		{ ~grVar.grnlr.fillFactor.valueAction_(msg[1].linexp(0, 1, 0.1, 16)) }.defer;
 	}, '/GRNLR/fill');
 	OSCdef(\grnlr_rFill, {|msg|
-		{ ~grnlrPar.rFill.valueAction_(msg[1]) }.defer;
+		{ ~grVar.grnlr.rFill.valueAction_(msg[1]) }.defer;
 	}, '/GRNLR/rFill');
 
 	OSCdef(\grnlr_dir, {|msg|
-		{ ~grnlrPar.dir.valueAction_(msg[1]) }.defer;
+		{ ~grVar.grnlr.dir.valueAction_(msg[1]) }.defer;
 	}, '/GRNLR/dir');
 
 	OSCdef(\grnlr_curve, {|msg|
-		{ ~grnlrPar.envCurve.valueAction_(msg[1]) }.defer;
+		{ ~grVar.grnlr.envCurve.valueAction_(msg[1]) }.defer;
 	}, '/GRNLR/curve');
 
 	OSCdef(\grnlr_filtLo, {|msg|
-		{ ~grnlrPar.filtFreqLo.valueAction_(msg[1].linexp(0, 1, 20000, 20)) }.defer;
+		{ ~grVar.grnlr.filtFreqLo.valueAction_(msg[1].linexp(0, 1, 20000, 20)) }.defer;
 	}, '/GRNLR/filterLo');
 	OSCdef(\grnlr_filtHi, {|msg|
-		{ ~grnlrPar.filtFreqHi.valueAction_(msg[1].linexp(0, 1, 20, 20000)) }.defer;
+		{ ~grVar.grnlr.filtFreqHi.valueAction_(msg[1].linexp(0, 1, 20, 20000)) }.defer;
 	}, '/GRNLR/filterHi');
 
 	OSCdef(\grnlr_qLo, {|msg|
-		{ ~grnlrPar.qLo.valueAction_(msg[1].linlin(0, 1, 1, 0)) }.defer;
+		{ ~grVar.grnlr.qLo.valueAction_(msg[1].linlin(0, 1, 1, 0)) }.defer;
 	}, '/GRNLR/qLo');
 	OSCdef(\grnlr_qHi, {|msg|
-		{ ~grnlrPar.qHi.valueAction_(msg[1].linlin(0, 1, 1, 0)) }.defer;
+		{ ~grVar.grnlr.qHi.valueAction_(msg[1].linlin(0, 1, 1, 0)) }.defer;
 	}, '/GRNLR/qHi');
 
 	// GRNDL
@@ -171,17 +171,17 @@
 	}, '/GRNDL/rFill');
 
 	OSCdef(\grndl_rate, {|msg|
-		{ ~grndlPar.rate.valueAction_(msg[1]) }.defer;
+		{ ~grndlPar.trans.valueAction_(msg[1]) }.defer;
 	}, '/GRNDL/rate');
 	OSCdef(\grndl_rRate, {|msg|
 		{ ~grndlPar.rRate.valueAction_(msg[1]) }.defer;
 	}, '/GRNDL/rRate');
 
 	OSCdef(\grndl_filtLo, {|msg|
-		{ ~grndlPar.filtLo.valueAction_(msg[1].linexp(0, 1, 20, 20000)) }.defer;
+		{ ~grndlPar.freqLo.valueAction_(msg[1].linexp(0, 1, 20, 20000)) }.defer;
 	}, '/GRNDL/filterLo');
 	OSCdef(\grndl_filtHi, {|msg|
-		{ ~grndlPar.filtHi.valueAction_(msg[1].linexp(0, 1, 20, 20000)) }.defer;
+		{ ~grndlPar.freqHi.valueAction_(msg[1].linexp(0, 1, 20, 20000)) }.defer;
 	}, '/GRNDL/filterHi');
 
 	OSCdef(\grndl_qLo, {|msg|

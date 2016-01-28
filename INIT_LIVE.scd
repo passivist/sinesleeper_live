@@ -7,19 +7,19 @@
 // ---------------------------------------------------------------- //
 // ----------------------- STARTUP ROUTINE ------------------------ //
 // ---------------------------------------------------------------- //
-
+s.latency_(nil);
 s.reboot;
 (
 fork{
 	MIDIClient.init;
 
-	MIDIClient.sources[1].postln;
-	MIDIIn.connect(0, MIDIClient.sources[1]);
+	// MIDIIn.connect(0, MIDIClient.sources[3]);
+	// MIDIIn.connect(0, MIDIClient.sources[5]);
 
-	~tablet = NetAddr.new("192.168.1.6", 5000);
+	~tablet = NetAddr.new("192.168.0.175", 5000);
 
 	//~clock = MIDISyncClock.init;
-	~clock = TempoClock.default;
+	~clock = TempoClock.default.tempo = 2;
 	~outBus = [0, 1];
 
 	0.3.wait;
@@ -44,7 +44,7 @@ fork{
 // ---------------------------------------------------------------- //
 // ----------------- for testing debugging etc... ----------------- //
 // ---------------------------------------------------------------- //
-
+~grndl_bus.scope
 // PORT:
 NetAddr.langPort;
 
@@ -53,21 +53,23 @@ NetAddr.langPort;
 (
 SynthDef(\ping, { |out, freq|
 	var sig, env;
-	env = EnvGen.kr(Env.perc(0.001, 0.4, 1, -8), doneAction: 2);
-	sig = SinOsc.ar(freq) * env ! 2;
+	env = EnvGen.kr(Env.perc(0.001, 0.05, 1, -8), doneAction: 2);
+	sig = Blip.ar(freq ! 2, 5) * env;
 	Out.ar(~outBus, sig * -6.dbamp);
 }).add;
 )
 
 (
-Pdef(
-	\clock_test,
-	Pbind(
-		\instrument, \ping,
-		\octave, 7,
-		\note, 0,
-		\dur, 1
-)).play(~clock);
+Tdef(\clock_test, { loop{
+	if(~clock.beats % 4 == 0){
+		Synth(\ping, [\freq, 2500]);
+	}{
+		Synth(\ping, [\freq, 1500]);
+	};
+	1.wait;
+}}).play(~clock);
 )
 
-Pdef(\clock_test).stop;
+Tdef(\clock_test).stop;
+
+

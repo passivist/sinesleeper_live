@@ -6,7 +6,7 @@
 ~savePreset = { |name, dict|
 	var file, valDict, innerDict;
 
-	file = File.open(("PRESETS/" ++ name.asString ++ ".scd").resolveRelative, "w+");
+	file = File.open(("PRESETS/" ++ name.asString ++ ".scd").resolveRelative.standardizePath, "w+");
 	valDict = ();
 
 	dict.keysValuesDo{ |outKey, outVal|
@@ -29,7 +29,7 @@
 ~loadPreset = {|name|
 	var dict, buf;
 
-	dict = load(("PRESETS/" ++ name.asString ++ ".scd").resolveRelative);
+	dict = load(("PRESETS/" ++ name.asString ++ ".scd").resolveRelative.standardizePath);
 	dict.keysValuesDo{ |outKey, outVal|
 		var subDict = dict[outKey];
 		subDict.keysValuesDo{ |key, val|
