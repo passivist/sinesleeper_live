@@ -13,17 +13,16 @@ s.reboot;
 fork{
 	MIDIClient.init;
 
-	// MIDIIn.connect(0V, MIDIClient.sources[3]);
-	// MIDIIn.connect(0, MIDIClient.sources[5]);
-	MIDIClient.sources[3].postln;
+	MIDIClient.sources[0].postln;
 	MIDIIn.connect(0, MIDIClient.sources[1]);
+	MIDIIn.connect(0, MIDIClient.sources[0]);
 	MIDIIn.connect(0, MIDIClient.sources[3]);
 
 	~tablet = NetAddr.new("192.168.1.19", 5000);
 
-	//~clock = MIDISyncClock.init;
-	~clock = TempoClock.default.tempo = 2;
-	~outBus = [0, 1];
+	~clock = MIDISyncClock.init;
+	// ~clock = TempoClock.default.tempo = 2;
+	// ~outBus = [0, 1];
 
 	0.3.wait;
 
@@ -33,6 +32,16 @@ fork{
 };
 )
 
+(
+fork{
+	loadRelative("CONTROLS.scd");
+	loadRelative("reverb.scd");
+	loadRelative("LOOPER.scd");
+	loadRelative("GRNLR_SC/GRNLR_GUI.scd");
+	loadRelative("GRNDL/GRNDL.scd");
+	loadRelative("PRESETS.scd");
+}
+)
 
 
 // ---------------------------------------------------------------- //
@@ -43,19 +52,20 @@ fork{
 NetAddr.langPort;
 
 ~clock.beats.postln;
-
+~outBus = [12, 13];
 (
 SynthDef(\ping, { |out, freq|
 	var sig, env;
-	env = EnvGen.kr(Env.perc(0.001, 0.05, 1, -8), doneAction: 2);
-	sig = Blip.ar(freq ! 2, 5) * env;
+	env = EnvGen.kr(Env.perc(0.0001, 0.1, 1, -8), doneAction: 2);
+	sig = Blip.ar(freq ! 2) * env;
 	Out.ar(~outBus, sig * -6.dbamp);
 }).add;
 )
 
 (
 Tdef(\clock_test, { loop{
-	if(~clock.beats % 4 == 0){
+	~clock.beats.postln;
+	if(~clock.beats.floor % 4 == 0){
 		Synth(\ping, [\freq, 2500]);
 	}{
 		Synth(\ping, [\freq, 1500]);
