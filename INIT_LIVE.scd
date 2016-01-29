@@ -13,15 +13,13 @@ s.reboot;
 fork{
 	MIDIClient.init;
 
-
-	// MIDIIn.connect(0, MIDIClient.sources[3]);
+	// MIDIIn.connect(0V, MIDIClient.sources[3]);
 	// MIDIIn.connect(0, MIDIClient.sources[5]);
 	MIDIClient.sources[3].postln;
 	MIDIIn.connect(0, MIDIClient.sources[1]);
 	MIDIIn.connect(0, MIDIClient.sources[3]);
 
-
-	~tablet = NetAddr.new("192.168.0.175", 5000);
+	~tablet = NetAddr.new("192.168.1.19", 5000);
 
 	//~clock = MIDISyncClock.init;
 	~clock = TempoClock.default.tempo = 2;
@@ -34,16 +32,7 @@ fork{
 	if(~grndl_bus.isNil){ ~grndl_bus = Bus.audio(s, 2) };
 };
 )
-(
-fork{
-	loadRelative("CONTROLS.scd");
-	loadRelative("reverb.scd");
-	loadRelative("LOOPER.scd");
-	loadRelative("GRNLR_SC/GRNLR_GUI.scd");
-	loadRelative("GRNDL/GRNDL.scd");
-	loadRelative("PRESETS.scd");
-}
-)
+
 
 
 // ---------------------------------------------------------------- //
@@ -76,5 +65,3 @@ Tdef(\clock_test, { loop{
 )
 
 Tdef(\clock_test).stop;
-
-
