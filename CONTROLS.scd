@@ -18,61 +18,46 @@
 	MIDIdef.cc(\tracks, { |val, cc|
 		val = val / 127;
 		{
-			if(cc < 47){
-				~looperLevels[cc - 41].valueAction_(val)
-			}{
-				if(cc == 47){
-					~grVar.grnlr.vol.valueAction_(val)
-				};
-				if(cc == 48){
-					~grndlPar.amp.valueAction_(val)
-				}
-			}
+			switch(cc,
+				40,	{ ~grVar.grnlr.pos.valueAction_(val); },
+				41,	{ ~grVar.grnlr.fillFactor.valueAction_(val.linexp(0, 1, 0.1, 16)); },
+				42,	{ ~grVar.grnlr.rFill.valueAction_(val); },
+				43,	{ ~grVar.grnlr.fillMod.valueAction_(val); },
+				44,	{ ~grVar.grnlr.dur.valueAction_(val.linexp(0, 1, 0.01, 2)); },
+				45,	{ ~grVar.grnlr.rDur.valueAction_(val); },
+				46,	{ ~grVar.grnlr.durMod.valueAction_(val); },
+				47, 	{ ~grVar.grnlr.vol.valueAction_(val) },
+				48, 	{ ~grVar.grnlr.ampMod.valueAction_(val) },
+			);
 		}.defer
-	}, (41 .. 48) );
+	}, (40 .. 48) );
 
 	MIDIdef.cc(\knobsA, { |val, cc|
 		val = val / 127;
 		{
-			if(cc < 37){
-				if(mode==0){
-					~looperSends[cc - 31].valueAction_(val)
-				}{
-					~looperLfoAmt[cc - 31].valueAction_(val)
-				}
-
-			}{
-				if(cc == 37){
-					~grVar.grnlr.send.valueAction_(val)
-				};
-				if(cc == 38){
-					~grndlPar.send.valueAction_(val)
-				}
-			}
-
-
+			switch(cc,
+				31, {~grVar.grnlr.dir.valueAction_(val.linlin(0, 1, -1, 1))},
+				32, {~grVar.grnlr.rPitch.valueAction_(val.lincurve(0, 1, 0, 1, 6))},
+				34, {~grVar.grnlr.rPos.valueAction_(val.lincurve(0, 1, 0, 1, 4))},
+				35, {~grVar.grnlr.filtFreqHi.valueAction_(val.linexp(0, 1, 20, 20000))},
+				36, {~grVar.grnlr.filtFreqLo.valueAction_(val.linexp(0, 1, 20, 20000))},
+				37, { ~rsynths.do{|synth| synth.set(\revDepth, val.linlin(0, 1, 0, 0.9), \lowVolume, 1)} },
+				38, {~grVar.grnlr.send.valueAction_(val.lincurve(0, 1, 0, 1, 3))},
+			);
 		}.defer
 	}, (31 .. 38) );
 
 	MIDIdef.cc(\knobsB, { |val, cc|
 		val = val / 127;
 		{
-			if(cc < 27){
-				if(mode==0){
-					~looperDelays[cc - 21].valueAction_(val)
-				}{
-					~looperLfoFreq[cc - 21].valueAction_(val.linexp(0, 1, 1, 40))
-				}
-
-			}{
-				if(cc == 27){
-					~grVar.grnlr.delay.valueAction_(val)
-				};
-				if(cc == 28){
-					~grndlPar.feed.valueAction_(val.linlin(0, 1, 0, 2))
-				}
-			}
-
+			switch(cc,
+				21, {~grVar.grnlr.envCurve.valueAction_(val.linlin(0, 1, 6, -6))},
+				22, {~grVar.grnlr.pitchMod.valueAction_(val.linlin(0, 1, 0, 48))},
+				24, {~grVar.grnlr.posMod.valueAction_(val)},
+				25, {~grVar.grnlr.qHi.valueAction_(val.lincurve(0, 1, 0.1, 1, -3))},
+				26, {~grVar.grnlr.qLo.valueAction_(val.lincurve(0, 1, 0.1, 1, -3))},
+				28, {~grVar.grnlr.delay.valueAction_(val)},
+			);
 		}.defer
 	}, (21 .. 28) );
 

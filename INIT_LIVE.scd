@@ -13,16 +13,16 @@ s.reboot;
 fork{
 	MIDIClient.init;
 
-	MIDIClient.sources[0].postln;
+	MIDIClient.sources[1].postln;
 	MIDIIn.connect(0, MIDIClient.sources[1]);
-	MIDIIn.connect(0, MIDIClient.sources[0]);
-	MIDIIn.connect(0, MIDIClient.sources[3]);
+	//MIDIIn.connect(0, MIDIClient.sources[0]);
+	//MIDIIn.connect(0, MIDIClient.sources[3]);
 
 	~tablet = NetAddr.new("192.168.1.19", 5000);
 
-	~clock = MIDISyncClock.init;
-	// ~clock = TempoClock.default.tempo = 2;
-	// ~outBus = [0, 1];
+	// ~clock = MIDISyncClock.init;
+	~clock = TempoClock.default.tempo = 2;
+	~outBus = [0, 1];
 
 	0.3.wait;
 
@@ -36,7 +36,7 @@ fork{
 fork{
 	loadRelative("CONTROLS.scd");
 	loadRelative("reverb.scd");
-	loadRelative("LOOPER.scd");
+	//loadRelative("LOOPER.scd");
 	loadRelative("GRNLR_SC/GRNLR_GUI.scd");
 	loadRelative("GRNDL/GRNDL.scd");
 	loadRelative("PRESETS.scd");

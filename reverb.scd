@@ -39,6 +39,6 @@ fork{
 		~rsynths.do(_.release);
 	};
 	~rsynths = [
-		Synth(\reverb, [\inBus, ~send, \lowVolume, 1, \depth, 0.6], addAction: \addToTail),
+		Synth(\reverb, [\inBus, ~send, \lowVolume, 1, \revDepth, 0.6], addAction: \addToTail),
 	];
 }.value;
