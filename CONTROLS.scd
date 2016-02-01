@@ -37,7 +37,8 @@
 		{
 			switch(cc,
 				31, {~grVar.grnlr.dir.valueAction_(val.linlin(0, 1, -1, 1))},
-				32, {~grVar.grnlr.rPitch.valueAction_(val.lincurve(0, 1, 0, 1, 6))},
+				33, {~grVar.grnlr.rPitch.valueAction_(val.lincurve(0, 1, 0, 1, 6))},
+				32, {~grVar.grnlr.pan.valueAction_(val.linlin(0, 1, -1, 1))},
 				34, {~grVar.grnlr.rPos.valueAction_(val.lincurve(0, 1, 0, 1, 4))},
 				35, {~grVar.grnlr.filtFreqHi.valueAction_(val.linexp(0, 1, 20, 20000))},
 				36, {~grVar.grnlr.filtFreqLo.valueAction_(val.linexp(0, 1, 20, 20000))},
@@ -52,6 +53,7 @@
 		{
 			switch(cc,
 				21, {~grVar.grnlr.envCurve.valueAction_(val.linlin(0, 1, 6, -6))},
+				//22, {~grVar.grnlr.panMod.valueAction_(val.linlin(0, 1, 0, 48))},
 				22, {~grVar.grnlr.pitchMod.valueAction_(val.linlin(0, 1, 0, 48))},
 				24, {~grVar.grnlr.posMod.valueAction_(val)},
 				25, {~grVar.grnlr.qHi.valueAction_(val.lincurve(0, 1, 0.1, 1, -3))},
