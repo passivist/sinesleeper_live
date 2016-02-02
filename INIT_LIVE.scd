@@ -9,12 +9,18 @@
 // ---------------------------------------------------------------- //
 s.latency_(nil);
 s.reboot;
+
+LID.initializeLID;
+LID.findAvailable;
+~joy = LID.openPath("/dev/input/event11");
+
+
 (
 fork{
 	MIDIClient.init;
 
 	MIDIClient.sources[1].postln;
-	MIDIIn.connect(0, MIDIClient.sources[1]);
+	MIDIIn.connect(0, MIDIClient.sources[3]);
 	//MIDIIn.connect(0, MIDIClient.sources[0]);
 	//MIDIIn.connect(0, MIDIClient.sources[3]);
 
@@ -34,9 +40,11 @@ fork{
 
 (
 fork{
-	loadRelative("CONTROLS.scd");
+	loadRelative("CONTROLS/MIDI.scd");
+	loadRelative("CONTROLS/JOYSTICK.scd");
+	//loadRelative("CONTROLS/OSC.scd");
 	loadRelative("reverb.scd");
-	//loadRelative("LOOPER.scd");
+	// loadRelative("LOOPER.scd");
 	loadRelative("GRNLR_SC/GRNLR_GUI.scd");
 	loadRelative("GRNDL/GRNDL.scd");
 	loadRelative("PRESETS.scd");
@@ -47,6 +55,8 @@ fork{
 // ---------------------------------------------------------------- //
 // ----------------- for testing debugging etc... ----------------- //
 // ---------------------------------------------------------------- //
+LID.closeAll;
+
 ~grndl_bus.scope
 // PORT:
 NetAddr.langPort;

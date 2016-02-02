@@ -2,7 +2,7 @@
 // buffer based delay
 /*
 *	TODO:
-*		rework variables as Dictionary like in GRNLR for easier interfacing with MIDI and OSC
+*		Fix Ndef(\pos) problem
 */
 (
 if(~send.isNil){ ~send = Bus.audio(s, 2) };
@@ -245,7 +245,7 @@ s.waitForBoot{
 		var env, sig;
 		env = Env.new([0,1,1,0], (fill * dur) * (1/3 ! 3), [-3, 1, 3]);
 		env = EnvGen.ar(env, doneAction: 2);
-		pos = pos * Rand(0.99, 1.01 ! 2);
+		//pos = pos * Rand(0.99, 1.01 ! 2);
 		sig = PlayBuf.ar(2, buf, trans, startPos: pos.wrap(0, 1) * BufFrames.kr(buf));
 		sig = HPF.ar(sig, 30).tanh;
 		sig = RHPF.ar( RLPF.ar(sig, freqLo, qLo), freqHi, qHi);
@@ -278,7 +278,7 @@ s.waitForBoot{
 
 			Synth(\grndl, [
 				\buf,		buffer,
-				\pos,		Ndef(\off, { Ndef.ar(\pos) + (~grndlPar.pos.value * rand(~grndlPar.rPos.value)) }),
+				\pos,		~grndlPar.pos.value + rand(~grndlPar.rPos.value),
 				\trans,	~grndlPar.trans.value.midiratio * (~grndlPar.rRate.value.rand + (1 - (~grndlPar.rRate.value/2))),
 				\fill,	~grndlPar.fill.value * (~grndlPar.rFill.value.rand + (1 - (~grndlPar.rFill.value/2))),
 				\feed,	(~grndlPar.feed.value * (~grndlPar.rFeed.value.rand + (1 - (~grndlPar.rFeed.value/2)))).clip(0, 2),
