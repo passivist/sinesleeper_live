@@ -185,7 +185,7 @@ s.waitForBoot{
 		EZKnob.new(win,
 			Rect(220, 0, 40, 80),
 			"length",
-			[0.125, 16, 'lin', 0.125, 1],
+			[0.125, 16, 'exp', 0.25, 1],
 			initAction: true,
 	));
 
@@ -193,7 +193,7 @@ s.waitForBoot{
 		EZKnob.new(win,
 			Rect(270, 0, 40, 80),
 			"amt",
-			[0, 1, 'lin', 0, 0],
+			[-1, 1, 'lin', 0, 0],
 			initAction: true,
 	));
 
@@ -261,28 +261,34 @@ s.waitForBoot{
 	////////////////////////////////////////////////////////////
 	// ------------------- CONTROL -------------------------- //
 	////////////////////////////////////////////////////////////
+	//
+	// Tdef(\grndlPan, {
+	// 	var i = 0;
+	// 	loop{
+	// 		i = (i + 1) % (~grndlPar.panLfoLength.value * 24);
+	// 		pan = ((i / (~grndlPar.panLfoLength.value * 24))).linlin(0, 1, -1, 1) * ~grndlPar.panlfoAmt.value;
+	// 		pan = (pan * 3).tanh;
+	// 		(1/24).wait;
+	// 	}
+	// }).play(~clock);
 
-	Tdef(\grndlPan, {
-		var i = 0;
-		loop{
-			i = (i + 1) % (~grndlPar.lfoLength.value * 24);
-			pan = ((i / (~grndlPar.lfoLength.value * 24))).linlin(0, 1, -1, 1) * ~grndlPar.lfoAmt.value;
-			pan = (pan * 3).tanh;
-			(1/24).wait;
-		}
-	}).play(~clock);
 
 	Tdef(\grndl, {
 		loop{
-			var localDur = ~grndlPar.dur.value * (~grndlPar.rDur.value.rand + (1 - (~grndlPar.rDur.value/2))).clip(0.01, 2);
+			var dur, pos;
+
+			dur = ~grndlPar.dur.value * (~grndlPar.rDur.value.rand + (1 - (~grndlPar.rDur.value/2))).clip(0.01, 2);
+			pos = ~grndlPar.pos.value + rand(~grndlPar.rPos.value);
+			pos = pos + (((~clock.beats % ~grndlPar.lfoLength.value) / ~grndlPar.lfoLength.value) * ~grndlPar.lfoAmt.value);
+			pos = pos.wrap(0,1);
 
 			Synth(\grndl, [
 				\buf,		buffer,
-				\pos,		~grndlPar.pos.value + rand(~grndlPar.rPos.value),
+				\pos,		pos,
 				\trans,	~grndlPar.trans.value.midiratio * (~grndlPar.rRate.value.rand + (1 - (~grndlPar.rRate.value/2))),
 				\fill,	~grndlPar.fill.value * (~grndlPar.rFill.value.rand + (1 - (~grndlPar.rFill.value/2))),
 				\feed,	(~grndlPar.feed.value * (~grndlPar.rFeed.value.rand + (1 - (~grndlPar.rFeed.value/2)))).clip(0, 2),
-				\dur,		localDur,
+				\dur,		dur,
 				\freqHi, (~grndlPar.freqHi.value * (~grndlPar.rFreqHi.value + (1 - (~grndlPar.rFreqHi.value/2)))).clip(20, 20000),
 				\qHi,		~grndlPar.qHi.value,
 				\freqLo, (~grndlPar.freqLo.value * (~grndlPar.rFreqLo.value + (1 - (~grndlPar.rFreqLo.value/2)))).clip(20, 20000),
@@ -291,7 +297,7 @@ s.waitForBoot{
 				\panPos,	~grndlPar.pan,
 				\amp, 	(~grndlPar.amp.value * (~grndlPar.rAmp.value + (1 - (~grndlPar.rAmp.value / 2)))).clip(0, 1)
 			]);
-			localDur.wait;
+			dur.wait;
 		}
 	}).play;
 

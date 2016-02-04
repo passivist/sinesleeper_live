@@ -41,8 +41,8 @@ fork{
 (
 fork{
 	loadRelative("CONTROLS/MIDI.scd");
-	loadRelative("CONTROLS/JOYSTICK.scd");
-	//loadRelative("CONTROLS/OSC.scd");
+	//loadRelative("CONTROLS/JOYSTICK.scd");
+	loadRelative("CONTROLS/OSC.scd");
 	loadRelative("reverb.scd");
 	// loadRelative("LOOPER.scd");
 	loadRelative("GRNLR_SC/GRNLR_GUI.scd");
