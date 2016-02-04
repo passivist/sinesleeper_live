@@ -69,7 +69,7 @@
 		{ ~grndlPar.trans.valueAction_(msg[1]) }.defer;
 	}, '/GRNDL/rate');
 	OSCdef(\grndl_rRate, {|msg|
-		{ ~grndlPar.rRate.valueAction_(msg[1]) }.defer;
+		{ ~grndlPar.rRate.valueAction_(msg[1].lincurve(0, 1, 0, 1, 4)) }.defer;
 	}, '/GRNDL/rRate');
 
 	OSCdef(\grndl_filtLo, {|msg|
@@ -85,4 +85,16 @@
 	OSCdef(\grndl_qHi, {|msg|
 		{ ~grndlPar.qHi.valueAction_(msg[1]) }.defer;
 	}, '/GRNDL/qHi');
+
+	OSCdef(\grndl_send, {|msg|
+		{ ~grndlPar.send.valueAction_(msg[1]) }.defer;
+	}, '/GRNDL/hall');
+
+	OSCdef(\grndl_feed, {|msg|
+		{ ~grndlPar.feed.valueAction_(msg[1].linlin(0, 1, 0, 2)) }.defer;
+	}, '/GRNDL/feed');
+
+	OSCdef(\grndl_vol, {|msg|
+		{ ~grndlPar.amp.valueAction_(msg[1]) }.defer;
+	}, '/GRNDL/vol');
 }.defer;

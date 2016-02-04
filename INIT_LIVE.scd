@@ -19,10 +19,10 @@ LID.findAvailable;
 fork{
 	MIDIClient.init;
 
-	MIDIClient.sources[1].postln;
-	MIDIIn.connect(0, MIDIClient.sources[3]);
+	MIDIClient.sources[3].postln;
+	MIDIIn.connect(0, MIDIClient.sources[1]);
 	//MIDIIn.connect(0, MIDIClient.sources[0]);
-	//MIDIIn.connect(0, MIDIClient.sources[3]);
+	MIDIIn.connect(0, MIDIClient.sources[3]);
 
 	~tablet = NetAddr.new("192.168.1.19", 5000);
 
@@ -83,5 +83,26 @@ Tdef(\clock_test, { loop{
 	1.wait;
 }}).play(~clock);
 )
+(
+SynthDef(\git, {|out, input=0|
+	var sig = SoundIn.ar(input, 1).tanh;
+	sig = sig ! 2;
+	Out.ar(~grndl_bus, sig);
+	Out.ar(~send, sig * 0.3);
+	Out.ar(out, sig);
+}).add
+)
 
+~git = Synth(\git, [\input, 3]);
+~git.free
 Tdef(\clock_test).stop;
+
+(
+MIDIdef.noteOn(\noteOn, {|vel, note|
+	if(~firstNote.isNil){
+		~notes = ();
+		~firstNote = note;
+	};
+	~notes.put(note.asSymbol, note);
+}, chan: 0);
+)

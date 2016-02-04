@@ -2,7 +2,7 @@
 // buffer based delay
 /*
 *	TODO:
-*		Fix Ndef(\pos) problem
+*		Transposition so implementieren, dass skalen möglich sind analog zu Pseq([0, -2, -1]) für z.B halbton ganzton
 */
 (
 if(~send.isNil){ ~send = Bus.audio(s, 2) };
@@ -224,7 +224,7 @@ s.waitForBoot{
 	// -------------------- AUDIO --------------------------- //
 	////////////////////////////////////////////////////////////
 
-	bufLength = 2;
+	bufLength = 3;
 	buffer = Buffer.alloc(s, bufLength * s.sampleRate, 2);
 
 	if(~feedBus.isNil){~feedBus = Bus.audio(s, 2) };
