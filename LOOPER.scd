@@ -11,10 +11,7 @@
 *
 *		track volume sometimes doesn't work
 *
-*
 */
-
-
 // LOOPER:
 
 if(~send.isNil){ ~send = Bus.audio(s, 2) };
@@ -70,7 +67,6 @@ s.waitForBoot {
 		});
 	}.fork;
 
-
 	////////////////////////////////////////////////////////////
 	// ----------------------- GUI -------------------------- //
 	////////////////////////////////////////////////////////////
@@ -104,7 +100,6 @@ s.waitForBoot {
 			{|slider|
 				var val = slider.value;
 				tracks[i].set(\amp, val);
-				val.postln
 			},
 			0,
 			false,

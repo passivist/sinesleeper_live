@@ -3,6 +3,7 @@
 /*
 *	TODO:
 *		Transposition so implementieren, dass skalen möglich sind analog zu Pseq([0, -2, -1]) für z.B halbton ganzton
+*
 */
 (
 if(~send.isNil){ ~send = Bus.audio(s, 2) };
@@ -224,7 +225,7 @@ s.waitForBoot{
 	// -------------------- AUDIO --------------------------- //
 	////////////////////////////////////////////////////////////
 
-	bufLength = 3;
+	bufLength = 2;
 	buffer = Buffer.alloc(s, bufLength * s.sampleRate, 2);
 
 	if(~feedBus.isNil){~feedBus = Bus.audio(s, 2) };
@@ -234,7 +235,7 @@ s.waitForBoot{
 	Ndef(\write, { |write = 0|
 		var sig;
 		BufWr.ar(
-			(In.ar(~grndl_bus) + In.ar(~feedBus) ).tanh,
+			(In.ar(~grndl_bus, 2) + In.ar(~feedBus, 2) ).tanh,
 			buffer, BufFrames.kr(buffer) * Ndef.ar(\pos)
 		);
 	});

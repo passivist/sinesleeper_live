@@ -19,15 +19,15 @@ LID.findAvailable;
 fork{
 	MIDIClient.init;
 
-	MIDIClient.sources[3].postln;
-	MIDIIn.connect(0, MIDIClient.sources[1]);
-	//MIDIIn.connect(0, MIDIClient.sources[0]);
+	//MIDIClient.sources[4].postln;
+	//MIDIIn.connect(0, MIDIClient.sources[1]);
 	MIDIIn.connect(0, MIDIClient.sources[3]);
+	//MIDIIn.connect(0, MIDIClient.sources[4]);
 
 	~tablet = NetAddr.new("192.168.1.19", 5000);
 
-	// ~clock = MIDISyncClock.init;
-	~clock = TempoClock.default.tempo = 2;
+	//~clock = MIDISyncClock.init;
+	~clock = TempoClock.default.tempo = 1;
 	~outBus = [0, 1];
 
 	0.3.wait;
@@ -44,8 +44,9 @@ fork{
 	//loadRelative("CONTROLS/JOYSTICK.scd");
 	loadRelative("CONTROLS/OSC.scd");
 	loadRelative("reverb.scd");
-	// loadRelative("LOOPER.scd");
+	//loadRelative("LOOPER.scd");
 	loadRelative("GRNLR_SC/GRNLR_GUI.scd");
+	loadRelative("GRNLR_SC/grnlr_synth.scd");
 	loadRelative("GRNDL/GRNDL.scd");
 	loadRelative("PRESETS.scd");
 }
@@ -58,11 +59,14 @@ fork{
 LID.closeAll;
 
 ~grndl_bus.scope
+~send.scope
+~feedBus.scope
 // PORT:
 NetAddr.langPort;
 
 ~clock.beats.postln;
 ~outBus = [12, 13];
+~outBus = [0, 1];
 (
 SynthDef(\ping, { |out, freq|
 	var sig, env;
@@ -83,6 +87,7 @@ Tdef(\clock_test, { loop{
 	1.wait;
 }}).play(~clock);
 )
+Tdef(\clock_test).stop;
 (
 SynthDef(\git, {|out, input=0|
 	var sig = SoundIn.ar(input, 1).tanh;
@@ -93,16 +98,7 @@ SynthDef(\git, {|out, input=0|
 }).add
 )
 
-~git = Synth(\git, [\input, 3]);
+~git = Synth(\git, [\input, 0]);
 ~git.free
-Tdef(\clock_test).stop;
 
-(
-MIDIdef.noteOn(\noteOn, {|vel, note|
-	if(~firstNote.isNil){
-		~notes = ();
-		~firstNote = note;
-	};
-	~notes.put(note.asSymbol, note);
-}, chan: 0);
-)
+s.meter
