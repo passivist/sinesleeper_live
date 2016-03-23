@@ -95,6 +95,8 @@
 	}, '/GRNDL/feed');
 
 	OSCdef(\grndl_vol, {|msg|
-		{ ~grndlPar.amp.valueAction_(msg[1]) }.defer;
+		{
+			~grndlPar.amp.valueAction_(msg[1].lincurve(0, 1, 0, 1, 6))
+		}.defer;
 	}, '/GRNDL/vol');
 }.defer;

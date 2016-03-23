@@ -4,6 +4,10 @@
 * --------------------------
 */
 
+/*
+	GRNDL Vol Werte tweaken, sinnvolle werte sind zu klein! GRNDL is immer zu laut
+*/
+
 // ---------------------------------------------------------------- //
 // ----------------------- STARTUP ROUTINE ------------------------ //
 // ---------------------------------------------------------------- //
@@ -14,15 +18,14 @@ LID.initializeLID;
 LID.findAvailable;
 ~joy = LID.openPath("/dev/input/event11");
 
-
+// MIDI-Channel für GRNLR-Transpose ist 2 !!
 (
 fork{
 	MIDIClient.init;
-
-	//MIDIClient.sources[4].postln;
+	//MIDIClient.sources[5].postln;
 	//MIDIIn.connect(0, MIDIClient.sources[1]);
-	MIDIIn.connect(0, MIDIClient.sources[3]);
-	//MIDIIn.connect(0, MIDIClient.sources[4]);
+	//MIDIIn.connect(0, MIDIClient.sources[3]);
+	//MIDIIn.connect(0, MIDIClient.sources[5]);
 
 	~tablet = NetAddr.new("192.168.1.19", 5000);
 
@@ -63,7 +66,7 @@ LID.closeAll;
 ~feedBus.scope
 // PORT:
 NetAddr.langPort;
-
+~notes.postln;
 ~clock.beats.postln;
 ~outBus = [12, 13];
 ~outBus = [0, 1];
@@ -87,14 +90,16 @@ Tdef(\clock_test, { loop{
 	1.wait;
 }}).play(~clock);
 )
+
 Tdef(\clock_test).stop;
+
 (
 SynthDef(\git, {|out, input=0|
 	var sig = SoundIn.ar(input, 1).tanh;
 	sig = sig ! 2;
 	Out.ar(~grndl_bus, sig);
-	Out.ar(~send, sig * 0.3);
-	Out.ar(out, sig);
+	//Out.ar(~send, sig * 0.3);
+	//	Out.ar(out, sig);
 }).add
 )
 

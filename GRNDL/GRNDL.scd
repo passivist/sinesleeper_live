@@ -13,6 +13,7 @@ if(~grndl_bus.isNil){ ~grndl_bus = Bus.audio(s, 2) };
 s.waitForBoot{
 	// AUDIO
 	var bufLength, buffer, feedBus, pan;
+	var writePos;
 
 	// GUI
 	var win;
@@ -230,17 +231,25 @@ s.waitForBoot{
 
 	if(~feedBus.isNil){~feedBus = Bus.audio(s, 2) };
 
-	Ndef(\pos, { LFSaw.ar(1/bufLength).range(0, 1) ! 2 });
+	Ndef(\pos, {
+		var pos = LFSaw.ar(1/bufLength).range(0, 1) ! 2;
+		var msg = SendTrig.kr(Impulse.kr(24), 0, pos);
+		pos
+	});
 
 	Ndef(\write, { |write = 0|
 		var sig;
 		BufWr.ar(
-			(In.ar(~grndl_bus, 2) + In.ar(~feedBus, 2) ).tanh,
+			(In.ar(~grndl_bus, 2) + In.ar(~feedBus, 2) ).tanh * 0.96,
 			buffer, BufFrames.kr(buffer) * Ndef.ar(\pos)
 		);
 	});
 
 	Ndef(\write).fadeTime = 0.5;
+
+	OSCdef(\grndl_pos, {|msg, time|
+		writePos = msg[3];
+	}, '\tr', s.addr);
 
 	SynthDef(\grndl, {|out, buf, pos=0.1, dur=0.5, fill, freqHi=60, freqLo=200, qHi=1, qLo=1, trans=1, amp=1, feed=0.1, panPos, send=0|
 		var env, sig;
@@ -262,26 +271,16 @@ s.waitForBoot{
 	////////////////////////////////////////////////////////////
 	// ------------------- CONTROL -------------------------- //
 	////////////////////////////////////////////////////////////
-	//
-	// Tdef(\grndlPan, {
-	// 	var i = 0;
-	// 	loop{
-	// 		i = (i + 1) % (~grndlPar.panLfoLength.value * 24);
-	// 		pan = ((i / (~grndlPar.panLfoLength.value * 24))).linlin(0, 1, -1, 1) * ~grndlPar.panlfoAmt.value;
-	// 		pan = (pan * 3).tanh;
-	// 		(1/24).wait;
-	// 	}
-	// }).play(~clock);
-
 
 	Tdef(\grndl, {
 		loop{
 			var dur, pos;
 
 			dur = ~grndlPar.dur.value * (~grndlPar.rDur.value.rand + (1 - (~grndlPar.rDur.value/2))).clip(0.01, 2);
-			pos = ~grndlPar.pos.value + rand(~grndlPar.rPos.value);
+			pos = writePos + ~grndlPar.pos.value + rand(~grndlPar.rPos.value);
 			pos = pos + (((~clock.beats % ~grndlPar.lfoLength.value) / ~grndlPar.lfoLength.value) * ~grndlPar.lfoAmt.value);
 			pos = pos.wrap(0,1);
+			pos.postln;
 
 			Synth(\grndl, [
 				\buf,		buffer,
